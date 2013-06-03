@@ -3,43 +3,32 @@ import org.graphology.extension.Resolver
 
 class TestCase extends GroovyTestCase {
 
-  static main(args) {
+  /*static main(args) {
     new TestCase().with { 
-      testStaticParameter()
+      testNulls()
     }
-  }
+  }*/
   
-
+  
   void testBasic() {
-    println "test basic"
     def a = 90
     def b = a.match { m ->
       when( "doe" )  { "matched 'doe' string" }
       when( Number ) { "matched number" }
       when( Date )   { "matched date" }
     }
-    println b
     assert b == "matched number"
   }
   
   
   void testNulls() {
-    println "test against null"
     def a = null
     def b = a.match {
       when( String ) { "matched string" }
-      when( null )   { "matched null" }
       when( 80 )     { "matched integer '80'" }
+      when( null )   { "matched null" }
     }
     assert b == "matched null"
-  }
-  
-  
-  void testLists() {
-    def a = [1, 2, 3, 4, 5]
-    def b = a.match {
-      when(a.isEmpty()) { }
-    }
   }
   
   
@@ -155,7 +144,62 @@ class TestCase extends GroovyTestCase {
       when(LinkedList) { "linkedlist" }
       otherwise "list"
     }
+    assert b == "linkedlist"
   }
   
+  
+  void testCollection() {
+    def a = []
+    def b = a.match {
+      when(Collection) { "collection" }
+      when(ArrayList) { "arraylist" }
+      otherwise "unknown"
+    }
+    assert b == "collection"
+  }
+  
+  
+  void testNumberInList() {
+    def a = 2
+    def b = a.match {
+      when([1, 2, 3, 4, 5]) { "in list" }
+      otherwise "not in list"
+    }
+    assert b == "in list"
+  }
+  
+  
+  void testListInRange() {
+    def a = [1, 2, 3]
+    def b = a.match {
+      when([2, 3, 4, 5, 6]) { "in list" }
+      when([1..4]) { "in range" }
+      when([[1, 2], [1, 2, 3]]) { "in nested list" } // just to remember this is how java werkz
+      otherwise "not in list"
+    }
+    assert b == "in nested list"
+  }
+  
+  
+  void testListInList() {
+    def a = [1, 2, 3]
+    def b = a.match {
+      when([2, 3, 4, 5, 6]) { "in wrong list" }
+      when([1, 2, 3, 4]) { "in list" }
+      when([[1, 2, 3]]) { "in nested list" } // see testListInRange
+      otherwise "not in list"
+    }
+    assert b == "in nested list"
+  }
+  
+  
+  void testItemInArray() {
+    def a = 1
+    def b = a.match {
+      when([1, 2] as int[]) { "in array" }
+      otherwise "not in array"
+    }
+    assert b == "in array"
+  }
 
 }

@@ -1,13 +1,26 @@
 #!/bin/sh
 
-file="case-match-extension.jar"
+#########
+# Pretty analog build script, jest because, 
+# it's a simple extension :-)
+#########
 
-groovyc org/graphology/extension/*.groovy
+file="graphology-case-match-extension.jar"
 
-rm "~/.groovy/lib/$file"
+echo " * Cleaning older version..."
+rm "dist/$file"
+rm "classes/ -R"
 
-jar c . > "dist/$file"
+echo " * Compiling..."
+groovyc src/org/graphology/extension/*.groovy -d "./classes/"
 
-cp "dist/$file" > ~/.groovy/lib/
+echo " * Jar-ing..."
+cd classes
+jar c . > ../dist/$file
+cd ..
 
-groovy test/TestCase.groovy
+#echo " * Copying to '.groovy/lib'"
+#cp dist/$file > ~/.groovy/lib/
+
+echo " * Launching tests"
+groovy -cp dist/$file test/TestCase.groovy
