@@ -14,6 +14,8 @@ rm "classes/ -R"
 echo " * Compiling..."
 groovyc src/org/graphology/extension/*.groovy -d "./classes/"
 
+cp META-INF -R ./classes
+
 echo " * Jar-ing..."
 cd classes
 jar c . > ../dist/$file
