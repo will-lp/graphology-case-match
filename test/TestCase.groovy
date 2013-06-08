@@ -1,5 +1,5 @@
 import groovy.transform.CompileStatic as CS
-import org.graphology.extension.Resolver
+import org.graphology.extension.Matcher
 
 class TestCase extends GroovyTestCase {
 
@@ -12,7 +12,7 @@ class TestCase extends GroovyTestCase {
   
   void testBasic() {
     def a = 90
-    def b = a.match { m ->
+    def b = a.case { m ->
       when( "doe" )  { "matched 'doe' string" }
       when( Number ) { "matched number" }
       when( Date )   { "matched date" }
@@ -23,7 +23,7 @@ class TestCase extends GroovyTestCase {
   
   void testNulls() {
     def a = null
-    def b = a.match {
+    def b = a.case {
       when( String ) { "matched string" }
       when( 80 )     { "matched integer '80'" }
       when( null )   { "matched null" }
@@ -34,7 +34,7 @@ class TestCase extends GroovyTestCase {
   
   void testNoOption() {
     def a = 1
-    def b = a.match {
+    def b = a.case {
       when( String )   { "matched string" }
       when( Object[] ) { "matched object[]" }
     }
@@ -44,7 +44,7 @@ class TestCase extends GroovyTestCase {
   
   void testOtherwise() {
     def a = new Date()
-    def b = a.match {
+    def b = a.case {
       when(String) { "matched string" }
       otherwise { "no match" }
     }
@@ -55,7 +55,7 @@ class TestCase extends GroovyTestCase {
   void testDate() {
     def toDate = { Date.parse "yyyy-MM-dd", it }
     def a = toDate "2000-01-01"
-    def b = a.match {
+    def b = a.case {
       when({ a > toDate("2000-12-01") }) { "greater than 2000-12-01" }
       when({ a < toDate("2001-01-01") }) { "less than 2001-01-01" }
     }
@@ -65,9 +65,9 @@ class TestCase extends GroovyTestCase {
   
   @CS void testStatic() {
     def a = 100
-    def b = a.match { org.graphology.extension.Resolver r ->
-      r.when({ a > 300 }) { "matched more than 300" }
-      r.when({ a < 200 }) { "matched less than 200" }
+    def b = a.case { Matcher m ->
+      m.when({ a > 300 }) { "matched more than 300" }
+      m.when({ a < 200 }) { "matched less than 200" }
     }
     assert b == "matched less than 200"
   }
@@ -75,9 +75,9 @@ class TestCase extends GroovyTestCase {
   
   @CS void testStaticParameter() {
     def a = 100
-    def b = a.match { Resolver r ->
-      r.when({ Number n -> n > 300 }) { "matched more than 300" }
-      r.when({ Number n -> n < 200 }) { "matched less than 200" }
+    def b = a.case { Matcher m ->
+      m.when({ Number n -> n > 300 }) { "matched more than 300" }
+      m.when({ Number n -> n < 200 }) { "matched less than 200" }
     }
     assert b == "matched less than 200"
   }
@@ -85,10 +85,10 @@ class TestCase extends GroovyTestCase {
   
   @CS void testStaticOtherwise() {
     def a = 100
-    def b = a.match { Resolver r ->
-      r.when({ Number n -> n > 100 }) { "matched more than 300" }
-      r.when({ Number n -> n < 100 }) { "matched less than 100" }
-      r.otherwise { "no match" }
+    def b = a.case { Matcher m ->
+      m.when({ Number n -> n > 100 }) { "matched more than 300" }
+      m.when({ Number n -> n < 100 }) { "matched less than 100" }
+      m.otherwise { "no match" }
     }
     assert b == "no match"
   }
@@ -96,7 +96,7 @@ class TestCase extends GroovyTestCase {
   
   void testDirect() {
     def a = 100
-    def b = a.match {
+    def b = a.case {
       when({ false }) { "nope" }
       when({ false }) { "nope" }
       when( 100 ) { "matched 100" }
@@ -108,7 +108,7 @@ class TestCase extends GroovyTestCase {
   
   void testDelegatedValue() {
     def a = [1, 2, 3, 4, 5]
-    def b = a.match {
+    def b = a.case {
       when({it.contains(1)}) { "contains one" }
       when({it.isEmpty()}) { "empty" }
       otherwise { "no matches" }
@@ -119,7 +119,7 @@ class TestCase extends GroovyTestCase {
   
   void testEmptyList() {
     def a = []
-    def b = a.match {
+    def b = a.case {
       when({it.isEmpty()}) { "empty" }
       otherwise { "non empty" }
     }
@@ -129,7 +129,7 @@ class TestCase extends GroovyTestCase {
   
   void testNonEmptyList() {
     def a = [1]
-    def b = a.match {
+    def b = a.case {
       when({it.isEmpty()}) { "empty" }
       otherwise "non empty"
     }
@@ -139,7 +139,7 @@ class TestCase extends GroovyTestCase {
   
   void testList() {
     def a = [] as LinkedList
-    def b = a.match {
+    def b = a.case {
       when(ArrayList) { "arraylist" }
       when(LinkedList) { "linkedlist" }
       otherwise "list"
@@ -150,7 +150,7 @@ class TestCase extends GroovyTestCase {
   
   void testCollection() {
     def a = []
-    def b = a.match {
+    def b = a.case {
       when(Collection) { "collection" }
       when(ArrayList) { "arraylist" }
       otherwise "unknown"
@@ -161,7 +161,7 @@ class TestCase extends GroovyTestCase {
   
   void testNumberInList() {
     def a = 2
-    def b = a.match {
+    def b = a.case {
       when([1, 2, 3, 4, 5]) { "in list" }
       otherwise "not in list"
     }
@@ -171,7 +171,7 @@ class TestCase extends GroovyTestCase {
   
   void testListInRange() {
     def a = [1, 2, 3]
-    def b = a.match {
+    def b = a.case {
       when([2, 3, 4, 5, 6]) { "in list" }
       when([1..4]) { "in range" }
       when([[1, 2], [1, 2, 3]]) { "in nested list" } // just to remember this is how java werkz
@@ -183,7 +183,7 @@ class TestCase extends GroovyTestCase {
   
   void testListInList() {
     def a = [1, 2, 3]
-    def b = a.match {
+    def b = a.case {
       when([2, 3, 4, 5, 6]) { "in wrong list" }
       when([1, 2, 3, 4]) { "in list" }
       when([[1, 2, 3]]) { "in nested list" } // see testListInRange
@@ -195,11 +195,88 @@ class TestCase extends GroovyTestCase {
   
   void testItemInArray() {
     def a = 1
-    def b = a.match {
+    def b = a.case {
       when([1, 2] as int[]) { "in array" }
       otherwise "not in array"
     }
     assert b == "in array"
   }
-
+  
+  
+  void testThenClosure() {
+    def a = ["a", "b", "c"]
+    def b = a.case {
+      when Collection then { value -> value[1] * 5 }
+      otherwise { assert false }
+    }
+    assert b == "bbbbb"
+  }
+  
+  
+  void testThenException() {
+    def a = (char) 'a'
+    try {
+      def b = a.case {
+        when Character
+        when(String) { "string" }
+      }
+      assert false, "Should've thrown an IllegalStateException"
+    } catch (IllegalStateException ise) {
+      assert true
+    } 
+  }
+  
+  
+  void testEarlySuccess() {
+    def b = 90.case {
+      when Integer then "integer"
+      when {throw new RuntimeException("Shouldn't get here")} then new Date()
+    }
+    assert b == "integer"
+  }
+  
+  
+  void testEarlyFailure() {
+    def a = "test"
+    try {
+      def b = a.case {
+        when { throw new RuntimeException() } then true
+        when true then true
+      }
+    } catch (RuntimeException re) {
+      assert true
+    }
+  }
+  
+  
+  @CS void testStaticWhenDsl() {
+    def b = ((char)'g').case { Matcher m ->
+      m.when Integer then "integer"
+      m.when Character then { true }
+      m.otherwise "no match"
+    }
+    assert b == true
+  }
+  
+  
+  @CS void testWhenClosure() {
+    def userInputWithLongVariableName = 110
+    def b = userInputWithLongVariableName.case { Matcher m ->
+      m.when { Integer a -> a < 110 } then { throw new RuntimeException() }
+      m.when { userInputWithLongVariableName >= 110 } then { new Date() }
+      m.otherwise "no match"
+    }
+    assert b instanceof Date
+  }
+  
+  
+  void testClass() {
+    def b = File.case {
+      when File then { "file" }
+      when InputStream then { "input stream" }
+      otherwise "none"
+    }
+    assert b == "file"
+  }
+  
 }
