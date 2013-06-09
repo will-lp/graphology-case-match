@@ -8,11 +8,15 @@ import groovy.transform.CompileStatic as CS
 @CS class SingleLazyMatcher extends Resolver implements Matcher {
   def matched = false
   
-  void checkMatch(Object condition, Object result) {
+  void when(Object condition, Object result) {
     if (!matched) {
       matched = matches(condition)
       if (matched) {
-        this.result = result
+        if (result instanceof Closure) {
+          this.result = ((Closure)result).curry(self)
+        } else {
+          this.result = result
+        }
       }
     }
   }

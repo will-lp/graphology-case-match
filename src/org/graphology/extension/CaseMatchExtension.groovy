@@ -37,20 +37,14 @@ import groovy.transform.CompileStatic as CS
     def resolver = new SingleMatcher(self: self)
     matches.delegate = resolver
     matches( resolver )
+    resolver.done()
+    
     
     if (resolver.matched) {
       return resolver.result
     } else {
-      def otherwiseValue = resolver.otherwiseValue
-      if (otherwiseValue) {
-        if (otherwiseValue instanceof Closure) {
-          return otherwiseValue(self)
-        } else {
-          return otherwiseValue
-        }
-      } else {
-        return null
-      }
+      def other = resolver.otherwiseValue
+      return (other instanceof Closure) ? other() : other
     }
   }
   
@@ -70,13 +64,9 @@ import groovy.transform.CompileStatic as CS
     def resolver = new SingleLazyMatcher(self: self)
     matches.delegate = resolver
     matches( resolver )
+    resolver.done()
     
     def clos = (resolver.matched) ? resolver.result : resolver.otherwiseValue
-    if (clos instanceof Closure) {
-      return clos.curry(self)
-    } else {
-      return clos
-    }
   }
   
   
@@ -91,16 +81,13 @@ import groovy.transform.CompileStatic as CS
     def resolver = new CollectMatcher(self: self)
     matches.delegate = resolver
     matches( resolver )
+    resolver.done()
     
     if (resolver.matches) {
       return resolver.matches
     } else { 
       def other = resolver.otherwiseValue
-      if (other instanceof Closure) {
-        return ((Closure)other)(self)
-      } else {
-        return other
-      }
+      return (other instanceof Closure) ? other() : other
     }
   }
   
@@ -109,16 +96,24 @@ import groovy.transform.CompileStatic as CS
    * Return a list of object, specified in the <code>matches</code> closure,
    * which matches the <code>self</code> object. If there are Closure
    * objects in the returning list, they won't be executed.
-   * If the self object doesn't match any condition, it will return a single
-   * list containing the result from the 'otherwise' method. If no 'otherwise'
-   * method was provided, an empty list is returned
+   * Each resulting closure will be curried with the <code>self</code> parameter
    * 
    * @param self the object to be testes against
    * @param matches a collection
    * @return List list of objects which matched the <code>self</code> object
    */
-  static List caseLazyCollect(Object self, Closure matches) {
-  
+  static Object caseCollectLazy(Object self, Closure matches) {
+    def resolver = new LazyCollectMatcher(self: self)
+    matches.delegate = resolver
+    matches( resolver )
+    resolver.done()
+    
+    if (resolver.matches.size() == 0 && resolver.otherwiseValue) {
+      return resolver.otherwiseValue
+    }
+    else {
+      return resolver.matches
+    } 
   }
   
 }

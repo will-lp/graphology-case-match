@@ -9,6 +9,8 @@ import groovy.transform.PackageScope as PS
  * Express the basic condition to match an object and store the 
  * state of the process. 
  * Provides the common behavior for the case/match pattern
+ *
+ * @author will_lp
  */
 @CS abstract class Resolver {
 
@@ -60,33 +62,20 @@ import groovy.transform.PackageScope as PS
   /*
    * Called by the <code>Then</code> object when the user
    */
-  void when(Object condition, Object result) {
-    if (areWeInThenState) { 
-      throw new IllegalStateException(
-        "You didn't provided a then() result for the when() method")
-    }
-    
-    checkMatch condition, result
-  }
-  
-  
-  /*
-   * Must be implemented by extending classes.
-   */
-  abstract void checkMatch(Object condition, Object result)
+  abstract void when(Object condition, Object result)
   
   
   /*
    * Checks whether we are waiting for a <code>then</code> input
    * from the user
    */
-  boolean areWeInThenState = false
+  boolean waitingForThen = false
   
   /*
    * Will be called by the <code>Then</code> object when the
    * user passes a result
    */
-  def doneWithThen() { areWeInThenState = false }
+  def doneWithThen() { waitingForThen = false }
   
   
   /*
@@ -97,10 +86,35 @@ import groovy.transform.PackageScope as PS
    * <code>when {it < 90} then { throw new RuntimeException() }</code>
    */
   Then when(Object condition) {
-    areWeInThenState = true
+    waitingForThen = true
     new ThenImpl(this, condition)
   }
   
+  
+  /**
+   * Needs to be manually called when this object finishes matching
+   * the user input.
+   * If any state is invalid, this method will throw an exception
+   */
+  void done() {
+    if (waitingForThen) {
+      throw new IllegalStateException(
+          "You didn't provided a then() result for the when() method")
+    }
+  }
+  
+  
+  /**
+   * Returns the <code>otherwiseValue</code>. If it is a closure, it
+   * will be curried with the <code>self</code> object
+   */
+  Object getOtherwiseValue() {
+    if (otherwiseValue instanceof Closure) {
+      return ((Closure)otherwiseValue).curry(self)
+    } else {
+      return otherwiseValue
+    }
+  }
   
 }
 

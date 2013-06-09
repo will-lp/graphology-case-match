@@ -8,7 +8,7 @@ import groovy.transform.CompileStatic as CS
 @CS class SingleMatcher extends Resolver implements Matcher {
   def matched = false
   
-  void checkMatch(Object condition, Object result) {
+  void when(Object condition, Object result) {
     if (!matched) {
       matched = matches(condition)
       if (matched) {

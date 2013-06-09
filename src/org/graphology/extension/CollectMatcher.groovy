@@ -9,7 +9,7 @@ import groovy.transform.CompileStatic as CS
 @CS class CollectMatcher extends Resolver implements Matcher {
   List<?> matches = []
   
-  void checkMatch(Object condition, Object result) {
+  void when(Object condition, Object result) {
     if (matches(condition)) {
       if (result instanceof Closure) {
         matches << ((Closure)result)(self)
