@@ -71,7 +71,7 @@ import groovy.transform.CompileStatic as CS
   
   /**
    * Matches an object against the options defined in the <code>matches</code> closure. 
-   * The first matching object is returned
+   * The first matching object is returned.
    * If no match is found and an <code>otherwise</code> value is provided,
    * it will be returned.
    * If the returning value is a closure, it will be curried with the <code>self</code> 
