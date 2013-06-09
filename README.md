@@ -1,7 +1,7 @@
 graphology-case-match
 =====================
 
-A Groovy extension module providing case/match for objects. Just download it (from [dist/graphology-case-match.jar](https://github.com/will-lp/graphology-case-match/blob/master/dist/graphology-case-match-extension.jar), drop it in the classpath of your project (or in the directory .groovy/lib of your home folder) and you are good to go. 
+A Groovy extension module providing case/match for objects. Just download it (from [dist/graphology-case-match.jar](https://github.com/will-lp/graphology-case-match/raw/master/dist/graphology-case-match-extension.jar), drop it in the classpath of your project (or in the directory .groovy/lib of your home folder) and you are good to go. 
 
 It relies on Groovy's `switch(obj)` to define the matching, so using Groovy's documentation provides a good overview of this extension behavior.
 
