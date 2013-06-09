@@ -15,7 +15,6 @@
  */
 
 import groovy.transform.CompileStatic as CS
-import org.graphology.extension.Matcher
 
 
 class TestCaseCollect extends GroovyTestCase {
@@ -86,9 +85,9 @@ class TestCaseCollect extends GroovyTestCase {
       100,
       { Integer i -> "a" * i }
     ].collect { 
-      it.case { Matcher m ->
-        m.when Closure then { Closure c -> c(2) }
-        m.when Integer then it
+      it.case { 
+        when Closure then { Closure c -> c(2) }
+        when Integer then it
       }
     }
     assert list == [180, 20, 100, "aa"]

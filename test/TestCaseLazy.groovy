@@ -15,7 +15,6 @@
  */
  
 import groovy.transform.CompileStatic as CS
-import org.graphology.extension.Matcher
 
 
 class TestCaseLazy extends GroovyTestCase {
@@ -62,7 +61,7 @@ class TestCaseLazy extends GroovyTestCase {
   @CS void testStaticLazy() {
     def j = "j"
     def closureWasExecuted = false
-    def k = j.caseLazy { 
+    def k = (Closure) j.caseLazy { 
       when Calendar then { false }
       otherwise { String s -> closureWasExecuted = true; s.toUpperCase() }
     }

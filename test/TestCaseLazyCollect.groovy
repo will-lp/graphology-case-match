@@ -15,7 +15,6 @@
  */
 
 import groovy.transform.CompileStatic as CS
-import org.graphology.extension.Matcher
 
 
 class TestCaseLazyCollect extends GroovyTestCase {
@@ -37,10 +36,10 @@ class TestCaseLazyCollect extends GroovyTestCase {
   
   
   @CS void testOtherwise() {
-    def k = "a".caseCollectLazy { Matcher m ->
-      m.when Collection then { Collection }
-      m.otherwise { LinkedList }
-      m.when List then { List }
+    def k = (Closure) "a".caseCollectLazy { 
+      when Collection then { Collection }
+      otherwise { LinkedList }
+      when List then { List }
     }
     assert k instanceof Closure
     assert k() == LinkedList
@@ -48,12 +47,12 @@ class TestCaseLazyCollect extends GroovyTestCase {
   
   
   @CS void testLazyClosureEvaluation() {
-    def a = (List) 50.0.caseCollectLazy { Matcher m ->
-      m.when BigDecimal then { "big decimal" }
-      m.when String then { "string" }
-      m.when Number then { "number" }
-      m.when Object then "object"
-      m.otherwise "none"
+    def a = (List) 50.0.caseCollectLazy { 
+      when BigDecimal then { "big decimal" }
+      when String then { "string" }
+      when Number then { "number" }
+      when Object then "object"
+      otherwise "none"
     }
     assert a[0] instanceof Closure
     assert a[1] instanceof Closure
@@ -79,7 +78,7 @@ class TestCaseLazyCollect extends GroovyTestCase {
       }
       when s.intState == 10 then { assert false, "boom" }
       
-      // this guy doesn't work, switch/case doesn't pick it up
+      // this guy doesn't match, switch/case doesn't pick it up
       when s.decimalState < 50 then { State state ->  
         state.decimalState = 90 
       }
@@ -98,14 +97,14 @@ class TestCaseLazyCollect extends GroovyTestCase {
   
   @CS void testLongCode() {
     def a = 90
-    def list = (List<Closure>) a.caseCollectLazy { Matcher m ->
-      m.when Integer then { Integer x -> 
+    def list = (List<Closure>) a.caseCollectLazy { 
+      when Integer then { Integer x -> 
         x * 2
       }
-      m.when Number then { Integer y ->
+      when Number then { Integer y ->
         y * 10
       }
-      m.otherwise { Integer z ->
+      otherwise { Integer z ->
         z * 5
       }
     }

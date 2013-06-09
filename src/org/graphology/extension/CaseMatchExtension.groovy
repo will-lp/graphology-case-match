@@ -57,14 +57,14 @@ import groovy.transform.CompileStatic as CS
    static <T> Object "case"(T self, @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matches) {
     def resolver = new SingleMatcher(self: self)
     matches.delegate = resolver
-    matches( resolver )
+    matches( self )
     resolver.done()
     
     if (resolver.matched) {
       return resolver.result
     } else {
       def other = resolver.otherwiseValue
-      return (other instanceof Closure) ? other() : other
+      return (other instanceof Closure) ? ((Closure) other)() : other
     }
   }
   
@@ -86,7 +86,7 @@ import groovy.transform.CompileStatic as CS
       @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matches) {
     def resolver = new SingleLazyMatcher(self: self)
     matches.delegate = resolver
-    matches( resolver )
+    matches( self )
     resolver.done()
     
     def clos = (resolver.matched) ? resolver.result : resolver.otherwiseValue
@@ -109,14 +109,14 @@ import groovy.transform.CompileStatic as CS
       @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matches) {
     def resolver = new CollectMatcher(self: self)
     matches.delegate = resolver
-    matches( resolver )
+    matches( self )
     resolver.done()
     
     if (resolver.matches) {
       return resolver.matches
     } else { 
       def other = resolver.otherwiseValue
-      return (other instanceof Closure) ? other() : other
+      return (other instanceof Closure) ? ((Closure) other)() : other
     }
   }
   
@@ -136,7 +136,7 @@ import groovy.transform.CompileStatic as CS
       @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matches) {
     def resolver = new LazyCollectMatcher(self: self)
     matches.delegate = resolver
-    matches( resolver )
+    matches( self )
     resolver.done()
     
     if (resolver.matches.size() == 0 && resolver.otherwiseValue) {

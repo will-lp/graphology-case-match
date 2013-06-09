@@ -27,4 +27,19 @@ class TestStatic extends GroovyTestCase {
     assert b == "aaaaa"
   }
   
+  @CS void testCaseWithDelegatesTo() {
+    def list = (List<Object>) [1, 2.0, "string", 4, (byte)0x4f, new Date()]
+    
+    def k = list.collect {
+      it.case { 
+        when String then { String s -> s * 2 }
+        when Integer then { Integer i -> i * 3 }
+        when Date then "date"
+        otherwise it
+      }
+    }
+    
+    assert k == [3, 2.0, "stringstring", 12, (byte)0x4f, "date"]
+  }
+  
 }

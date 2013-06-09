@@ -15,7 +15,6 @@
  */
  
 import groovy.transform.CompileStatic as CS
-import org.graphology.extension.Matcher
 
 class TestCase extends GroovyTestCase {
 
@@ -94,10 +93,10 @@ class TestCase extends GroovyTestCase {
   
   @CS void testStaticOtherwise() {
     def a = 100
-    def b = a.case { Matcher m ->
-      m.when({ Number n -> n > 100 }) { "matched more than 300" }
-      m.when({ Number n -> n < 100 }) { "matched less than 100" }
-      m.otherwise { "no match" }
+    def b = a.case { 
+      when({ Number n -> n > 100 }) { "matched more than 300" }
+      when({ Number n -> n < 100 }) { "matched less than 100" }
+      otherwise { "no match" }
     }
     assert b == "no match"
   }
