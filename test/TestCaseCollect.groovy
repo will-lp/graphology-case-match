@@ -62,4 +62,36 @@ class TestCaseCollect extends GroovyTestCase {
     assert b == ["collection", "list", "arraylist"]
   }
   
+  
+  @CS void testClosureCollection() {
+    def list = [
+      { Integer i -> i * 90 },
+      { Integer i -> i * 10 },
+      100,
+      { Integer i -> "a" * i }
+    ].collect { 
+      it.case { Matcher m ->
+        m.when Closure then { Closure c -> c(2) }
+        m.when Integer then it
+      }
+    }
+    assert list == [180, 20, 100, "aa"]
+  }
+  
+  
+  void testCollectMixedWithClosures() {
+    def a = 90
+    def b = a.caseCollect {
+      when Integer then 1
+      when Number then { 2 }
+      when 90 then 3
+      otherwise 6
+      when { it > 90 } then { 4 }
+      when { it < 100 } then 5
+    }
+    assert b instanceof List
+    assert b == [1, 2, 3, 5]
+  }
+  
+  
 }

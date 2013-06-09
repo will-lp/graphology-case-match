@@ -7,7 +7,7 @@ import groovy.transform.CompileStatic as CS
 /**
  * A case/match extension for Groovy.
  * 
- * It uses the following syntax:
+ * It allows the following syntaxes:
  * 
  * <pre>
  * object.case {
@@ -28,17 +28,21 @@ import groovy.transform.CompileStatic as CS
   
   
   /**
-   * Matches an object against the options defined in the "matches" closure
+   * Matches an object against the options defined in the <code>matches</code> closure.
+   * The first matching object is returned.
+   * If no match is found and an <code>otherwise</code> value is provided,
+   * it will be returned.
    * 
-   * @param object the object to match against.
-   * @param matches a closure with options to match.
+   * @param self: the object to match against.
+   * @param matches: a closure with options to match.
+   * @return the matching object. If it is a closure, it will be executed
+     * curried with the <code>self</code>. If none provided, <code>null</code>.
    */
   static def "case"(Object self, Closure matches) {
     def resolver = new SingleMatcher(self: self)
     matches.delegate = resolver
     matches( resolver )
     resolver.done()
-    
     
     if (resolver.matched) {
       return resolver.result
@@ -50,15 +54,17 @@ import groovy.transform.CompileStatic as CS
   
   
   /**
-   * Matches an object in a lazy way, i.e., if the object matches
-   * a condition returning a closure, the closure will be returned
-   * without being executed.
-   * The returning closure will also be curried with the <code>self</code> object
-   * as the first parameter
+   * Matches an object against the options defined in the <code>matches</code> closure. 
+   * The first matching object is returned
+   * If no match is found and an <code>otherwise</code> value is provided,
+   * it will be returned.
+   * If the returning value is a closure, it will be curried with the <code>self</code> 
+   * object, but won't be executed.
    * 
-   * @param self
-   * @param matches
-   * @return a curried closure with the `self` object, if any
+   * @param self: the object to match against
+   * @param matches: a closure with options to match
+   * @return a matching object. If it is a closure, it will be curried with 
+   * the <code>self</code> object. <code>null</code> otherwise.
    */
   static def caseLazy(Object self, Closure matches) {
     def resolver = new SingleLazyMatcher(self: self)
@@ -72,10 +78,15 @@ import groovy.transform.CompileStatic as CS
   
   /**
    * Collects a list of the values matched against a <code>self</code> object.
-   * 
-   * @param self
-   * @param matches
-   * @return List
+   * If no value matches the <code>self</code> object, the <code>otherwise</code>
+   * value will be used, if provided.
+   * If the return is a Closure or a list of Closures, they will be curried
+   * with the <code>self</code> object.
+   *
+   * @param self: the object to match against
+   * @param matches: a closure with options to match
+   * @return either a List of matching objects, a single value from <code>otherwise</code>
+   * or <code>null</code>, otherwise.
    */
   static Object caseCollect(Object self, Closure matches) {
     def resolver = new CollectMatcher(self: self)
@@ -93,14 +104,15 @@ import groovy.transform.CompileStatic as CS
   
   
   /**
-   * Return a list of object, specified in the <code>matches</code> closure,
-   * which matches the <code>self</code> object. If there are Closure
+   * Return a list of objects, from the options in the <code>matches</code> 
+   * closure which matched the <code>self</code> object. If there are Closure
    * objects in the returning list, they won't be executed.
-   * Each resulting closure will be curried with the <code>self</code> parameter
+   * Each resulting closure will be curried with the <code>self</code> parameter.
    * 
-   * @param self the object to be testes against
-   * @param matches a collection
-   * @return List list of objects which matched the <code>self</code> object
+   * @param self: the object to be tested against
+   * @param matches: a closure with options to match
+   * @return either a list of objects which matched the <code>self</code> object,
+   * a single object from the <code>otherwise</code> value, or <code>null</code>.
    */
   static Object caseCollectLazy(Object self, Closure matches) {
     def resolver = new LazyCollectMatcher(self: self)
