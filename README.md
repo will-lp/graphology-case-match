@@ -1,7 +1,7 @@
 graphology-case-match
 =====================
 
-A Groovy extension module providing case/match for objects. Just download it (from [dist/graphology-case-match.jar](https://github.com/will-lp/graphology-case-match/raw/master/dist/graphology-case-match-extension.jar), drop it in the classpath of your project (or in the directory .groovy/lib of your home folder) and you are good to go. 
+A Groovy extension module providing case/match for objects. Just download it from [dist/graphology-case-match.jar](https://github.com/will-lp/graphology-case-match/raw/master/dist/graphology-case-match-extension.jar), drop it in the classpath of your project (or in the directory .groovy/lib of your home folder) and you are good to go. 
 
 It relies on Groovy's `switch(obj)` to define the matching, so using [Groovy's documentation](http://groovy.codehaus.org/Logical%2BBranching) provides a good overview of this extension behavior.
 
@@ -31,7 +31,7 @@ An example using the DSL syntax:
 
     def a = ["a", "b", "c"]
     def b = a.case {
-      when Collection then { value -> value[1] * 5 }
+      when Collection then { value -> value[1] * 5 } // 'a' can be accessed as a parameter
       otherwise { assert false }
     }
     assert b == "bbbbb"
@@ -47,6 +47,8 @@ object, but won't be executed.
     def caseLazy(Object self, Closure matches)
 
 A small example with static compilation:
+
+    import org.graphology.extension.Matcher
 
     @CompileStatic void testStaticLazy() {
       def j = "j"
