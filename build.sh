@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #########
-# Pretty analog build script, jest because, 
+# Pretty analog build script, just because, 
 # it's a simple extension :-)
 #########
 
@@ -14,8 +14,6 @@ rm "~/.groovy/lib/$file"
 
 echo " * Compiling..."
 groovyc src/org/graphology/extension/*.groovy -d "./classes/"
-
-#cp META-INF -R ./classes
 
 echo " * Jar-ing..."
 cd classes
