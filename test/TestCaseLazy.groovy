@@ -62,9 +62,9 @@ class TestCaseLazy extends GroovyTestCase {
   @CS void testStaticLazy() {
     def j = "j"
     def closureWasExecuted = false
-    def k = j.caseLazy { Matcher m ->
-      m.when Calendar then { false }
-      m.otherwise { String s -> closureWasExecuted = true; s.toUpperCase() }
+    def k = j.caseLazy { 
+      when Calendar then { false }
+      otherwise { String s -> closureWasExecuted = true; s.toUpperCase() }
     }
     assert k instanceof Closure
     assert !closureWasExecuted
@@ -74,9 +74,9 @@ class TestCaseLazy extends GroovyTestCase {
   
   
   @CS void testNonLazyFirst() {
-    def q = "p".case { Matcher m ->
-      m.when String then "matched string p"
-      m.when "p" then { "matched p" }
+    def q = "p".case { 
+      when String then "matched string p"
+      when "p" then { "matched p" }
     }
     assert q == "matched string p"
   }

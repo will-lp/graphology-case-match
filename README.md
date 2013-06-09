@@ -5,9 +5,11 @@ A Groovy extension module providing case/match for objects. Just download it fro
 
 It relies on Groovy's `switch(obj)` to define the matching, so using [Groovy's documentation](http://groovy.codehaus.org/Logical%2BBranching) provides a good overview of this extension behavior.
 
-It is statically compilable, requiring using an explicit object from the API to do so. It also provides a DSL-like construct in the form of `when condition then result`.
+It can use `@CompileStatic`, `@TypeChecked` and also provides a DSL-like construct in the form of `when condition then result`.
 
 Graphology adds the following four methods to every object:
+
+
 
 ## `case`
 
@@ -15,12 +17,12 @@ Matches an object against the options defined in a closure.
 The first matching object is returned. If no match is found and an otherwise value is provided, it will be returned.
 If the returning object is a closure, it will be executed curried with the caller object.
 
-    def case(Object self, Closure matches)
+    Object case(Object self, Closure matches)
 
 A small example:
 
     def a = 90
-    def b = a.case { m ->
+    def b = a.case { 
       when( "doe" )  { "matched 'doe' string" }
       when( Number ) { "matched number" }
       when( Date )   { "matched date" }
@@ -44,18 +46,16 @@ The first matching object is returned. If no match is found and an <code>otherwi
 it will be returned. If the returning value is a closure, it will be curried with the <code>self</code> 
 object, but won't be executed.
  
-    def caseLazy(Object self, Closure matches)
+    Object caseLazy(Object self, Closure matches)
 
 A small example with static compilation:
-
-    import org.graphology.extension.Matcher
 
     @CompileStatic void testStaticLazy() {
       def j = "j"
       def closureWasExecuted = false
-      def k = j.caseLazy { Matcher m ->
-        m.when Calendar then { false }
-        m.otherwise { String s -> closureWasExecuted = true; s.toUpperCase() }
+      def k = j.caseLazy { 
+        when Calendar then { false }
+        otherwise { String s -> closureWasExecuted = true; s.toUpperCase() }
       }
       assert k instanceof Closure
       assert !closureWasExecuted

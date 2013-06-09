@@ -21,7 +21,7 @@ class TestCase extends GroovyTestCase {
 
   void testBasic() {
     def a = 90
-    def b = a.case { m ->
+    def b = a.case { 
       when( "doe" )  { "matched 'doe' string" }
       when( Number ) { "matched number" }
       when( Date )   { "matched date" }
@@ -74,9 +74,9 @@ class TestCase extends GroovyTestCase {
   
   @CS void testStatic() {
     def a = 100
-    def b = a.case { Matcher m ->
-      m.when({ a > 300 }) { "matched more than 300" }
-      m.when({ a < 200 }) { "matched less than 200" }
+    def b = a.case { 
+      when({ a > 300 }) { "matched more than 300" }
+      when({ a < 200 }) { "matched less than 200" }
     }
     assert b == "matched less than 200"
   }
@@ -84,9 +84,9 @@ class TestCase extends GroovyTestCase {
   
   @CS void testStaticParameter() {
     def a = 100
-    def b = a.case { Matcher m ->
-      m.when({ Number n -> n > 300 }) { "matched more than 300" }
-      m.when({ Number n -> n < 200 }) { "matched less than 200" }
+    def b = a.case {
+      when({ Number n -> n > 300 }) { "matched more than 300" }
+      when({ Number n -> n < 200 }) { "matched less than 200" }
     }
     assert b == "matched less than 200"
   }
@@ -259,10 +259,10 @@ class TestCase extends GroovyTestCase {
   
   
   @CS void testStaticWhenDsl() {
-    def b = ((char)'g').case { Matcher m ->
-      m.when Integer then "integer"
-      m.when Character then { true }
-      m.otherwise "no match"
+    def b = ((char)'g').case { 
+      when Integer then "integer"
+      when Character then { true }
+      otherwise "no match"
     }
     assert b == true
   }
@@ -270,10 +270,10 @@ class TestCase extends GroovyTestCase {
   
   @CS void testWhenClosure() {
     def userInputWithLongVariableName = 110
-    def b = userInputWithLongVariableName.case { Matcher m ->
-      m.when { Integer a -> a < 110 } then { throw new RuntimeException() }
-      m.when { userInputWithLongVariableName >= 110 } then { new Date() }
-      m.otherwise "no match"
+    def b = userInputWithLongVariableName.case { 
+      when { Integer a -> a < 110 } then { throw new RuntimeException() }
+      when { userInputWithLongVariableName >= 110 } then { new Date() }
+      otherwise "no match"
     }
     assert b instanceof Date
   }

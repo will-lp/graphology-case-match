@@ -54,7 +54,7 @@ import groovy.transform.CompileStatic as CS
    * @return the matching object. If it is a closure, it will be executed
      * curried with the <code>self</code>. If none provided, <code>null</code>.
    */
-  static def "case"(Object self, Closure matches) {
+   static <T> Object "case"(T self, @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matches) {
     def resolver = new SingleMatcher(self: self)
     matches.delegate = resolver
     matches( resolver )
@@ -82,7 +82,8 @@ import groovy.transform.CompileStatic as CS
    * @return a matching object. If it is a closure, it will be curried with 
    * the <code>self</code> object. <code>null</code> otherwise.
    */
-  static def caseLazy(Object self, Closure matches) {
+  static <T> Object caseLazy(T self, 
+      @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matches) {
     def resolver = new SingleLazyMatcher(self: self)
     matches.delegate = resolver
     matches( resolver )
@@ -104,7 +105,8 @@ import groovy.transform.CompileStatic as CS
    * @return either a List of matching objects, a single value from <code>otherwise</code>
    * or <code>null</code>, otherwise.
    */
-  static Object caseCollect(Object self, Closure matches) {
+  static <T> Object caseCollect(T self, 
+      @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matches) {
     def resolver = new CollectMatcher(self: self)
     matches.delegate = resolver
     matches( resolver )
@@ -130,7 +132,8 @@ import groovy.transform.CompileStatic as CS
    * @return either a list of objects which matched the <code>self</code> object,
    * a single object from the <code>otherwise</code> value, or <code>null</code>.
    */
-  static Object caseCollectLazy(Object self, Closure matches) {
+  static <T> Object caseCollectLazy(T self, 
+      @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matches) {
     def resolver = new LazyCollectMatcher(self: self)
     matches.delegate = resolver
     matches( resolver )

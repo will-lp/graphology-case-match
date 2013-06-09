@@ -1,8 +1,7 @@
 #!/bin/sh
 
 #########
-# Pretty analog build script, just because, 
-# it's a simple extension :-)
+# PABS: Pretty Analog Build Script
 #########
 
 file="graphology-case-match-extension.jar"
@@ -28,4 +27,5 @@ groovy -cp dist/$file test/TestCase.groovy
 groovy -cp dist/$file test/TestCaseLazy.groovy
 groovy -cp dist/$file test/TestCaseCollect.groovy
 groovy -cp dist/$file test/TestCaseLazyCollect.groovy
+groovy -cp dist/$file test/TestStatic.groovy
 

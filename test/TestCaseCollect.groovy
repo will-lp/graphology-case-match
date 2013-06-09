@@ -47,12 +47,12 @@ class TestCaseCollect extends GroovyTestCase {
   
   
   @CS void testEagerClosureEvaluation() {
-    def a = 50.0.caseCollect { Matcher m ->
-      m.when BigDecimal then { "big decimal" }
-      m.when String then { "string" }
-      m.when Number then { "number" }
-      m.when Object then "object"
-      m.otherwise "none"
+    def a = 50.0.caseCollect { 
+      when BigDecimal then { "big decimal" }
+      when String then { "string" }
+      when Number then { "number" }
+      when Object then "object"
+      otherwise "none"
     }
     assert a == ["big decimal", "number", "object"]
   }
