@@ -52,13 +52,12 @@ import groovy.transform.CompileStatic as CS
    * @param self: the object to match against.
    * @param matches: a closure with options to match.
    * @return the matching object. If it is a closure, it will be executed
-     * curried with the <code>self</code>. If none provided, <code>null</code>.
+   * curried with the <code>self</code>. If none provided, <code>null</code>.
    */
-   static <T> Object "case"(T self, @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matches) {
-    def resolver = new SingleMatcher(self: self)
-    matches.delegate = resolver
-    matches( self )
-    resolver.done()
+   static <T> Object "case"(
+        T self, @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matcher) {
+    
+    def resolver = MatcherFactory.create SingleMatcher, self, matcher
     
     if (resolver.matched) {
       return resolver.result
@@ -84,10 +83,8 @@ import groovy.transform.CompileStatic as CS
    */
   static <T> Object caseLazy(T self, 
       @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matches) {
-    def resolver = new SingleLazyMatcher(self: self)
-    matches.delegate = resolver
-    matches( self )
-    resolver.done()
+      
+    def resolver = MatcherFactory.create SingleLazyMatcher, self, matches
     
     def clos = (resolver.matched) ? resolver.result : resolver.otherwiseValue
   }
@@ -107,10 +104,8 @@ import groovy.transform.CompileStatic as CS
    */
   static <T> Object caseCollect(T self, 
       @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matches) {
-    def resolver = new CollectMatcher(self: self)
-    matches.delegate = resolver
-    matches( self )
-    resolver.done()
+    
+    def resolver = MatcherFactory.create CollectMatcher, self, matches
     
     if (resolver.matches) {
       return resolver.matches
@@ -134,10 +129,13 @@ import groovy.transform.CompileStatic as CS
    */
   static <T> Object caseCollectLazy(T self, 
       @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matches) {
-    def resolver = new LazyCollectMatcher(self: self)
+    
+    def resolver = MatcherFactory.create LazyCollectMatcher, self, matches
+    
+    /*def resolver = new LazyCollectMatcher(self: self)
     matches.delegate = resolver
     matches( self )
-    resolver.done()
+    resolver.done()*/
     
     if (resolver.matches.size() == 0 && resolver.otherwiseValue) {
       return resolver.otherwiseValue

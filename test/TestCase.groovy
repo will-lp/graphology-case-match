@@ -18,6 +18,8 @@ import groovy.transform.CompileStatic as CS
 
 class TestCase extends GroovyTestCase {
 
+  //static main(args) { new TestCase().testNested() }
+
   void testBasic() {
     def a = 90
     def b = a.case { 
@@ -287,4 +289,21 @@ class TestCase extends GroovyTestCase {
     assert b == "file"
   }
   
+  
+  void testNested() {
+    def a = new Expando(value: 10.00)
+    def result = a.case {
+      when Expando then { e ->
+        e.value.case {
+          when BigDecimal then "this is a bigdecimal"
+          otherwise "value is not a bigdecimal"
+        }
+      }
+      otherwise "not a expando"
+    }
+    assert result == "this is a bigdecimal"
+  }
+  
 }
+
+

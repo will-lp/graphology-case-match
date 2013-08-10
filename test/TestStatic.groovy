@@ -42,4 +42,21 @@ class TestStatic extends GroovyTestCase {
     assert k == [3, 2.0, "stringstring", 12, (byte)0x4f, "date"]
   }
   
+  
+  @CS void testNested() {
+    def a = [value: 10.00]
+    def result = a.case {
+      when Map then { Map m ->
+        m['value'].case {
+          when BigDecimal then {
+            "this is a bigdecimal"
+          }
+          otherwise "value is not a bigdecimal"
+        }
+      }
+      otherwise "not a expando"
+    }
+    assert result == "this is a bigdecimal"
+  }
+  
 }
