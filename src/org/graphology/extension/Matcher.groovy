@@ -54,4 +54,38 @@ interface Matcher {
    */
   void otherwise(Object o)
   
+  
+  /*
+   * Will be called by the <code>Then</code> object when the
+   * user passes a result. Enables a statically compilable DSL
+   * for case/matching.
+   */
+  def doneWithThen()
+  
+  
+  /**
+   * Needs to be manually called when this object finishes matching
+   * the user input.
+   * If any state is invalid, this method will throw an exception
+   */
+  void done()
+  
+  
+  /**
+   * Returns the matching result.
+   */
+  Object getMatchedResult()
+  
+  
+  /**
+   * Setter for the object which is being matched against
+   */
+  void setSelf(self)
+  
+  
+  /**
+   * Getter for the object which is being matched against
+   */
+  Object getSelf()
+  
 }

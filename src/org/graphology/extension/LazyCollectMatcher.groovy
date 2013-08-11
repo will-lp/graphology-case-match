@@ -24,7 +24,7 @@ import groovy.transform.CompileStatic as CS
  * 
  * @author will_lp
  */
-@CS class LazyCollectMatcher extends Resolver implements Matcher {
+@CS class LazyCollectMatcher extends AbstractMatcher {
 
   List matches = []
   
@@ -36,6 +36,15 @@ import groovy.transform.CompileStatic as CS
         matches << result
       }
     }
+  }
+  
+  
+  Object getMatchedResult() {
+    if (matches.size() == 0 && otherwiseValue) {
+      return otherwiseValue
+    } else {
+      return matches
+    } 
   }
   
 }

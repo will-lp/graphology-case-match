@@ -55,16 +55,10 @@ import groovy.transform.CompileStatic as CS
    * curried with the <code>self</code>. If none provided, <code>null</code>.
    */
    static <T> Object "case"(
-        T self, @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matcher) {
+        T self, @DelegatesTo(value=Matcher, strategy=Closure.DELEGATE_FIRST) Closure matcher) {
     
-    def resolver = MatcherFactory.create SingleMatcher, self, matcher
+    MatcherFactory.getResult SingleMatcher, self, matcher
     
-    if (resolver.matched) {
-      return resolver.result
-    } else {
-      def other = resolver.otherwiseValue
-      return (other instanceof Closure) ? ((Closure) other)() : other
-    }
   }
   
   
@@ -82,11 +76,10 @@ import groovy.transform.CompileStatic as CS
    * the <code>self</code> object. <code>null</code> otherwise.
    */
   static <T> Object caseLazy(T self, 
-      @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matches) {
+      @DelegatesTo(value=Matcher, strategy=Closure.DELEGATE_FIRST) Closure matches) {
       
-    def resolver = MatcherFactory.create SingleLazyMatcher, self, matches
+    MatcherFactory.getResult SingleLazyMatcher, self, matches
     
-    def clos = (resolver.matched) ? resolver.result : resolver.otherwiseValue
   }
   
   
@@ -103,16 +96,11 @@ import groovy.transform.CompileStatic as CS
    * or <code>null</code>, otherwise.
    */
   static <T> Object caseCollect(T self, 
-      @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matches) {
+      @DelegatesTo(value=Matcher, strategy=Closure.DELEGATE_FIRST) Closure matches) {
     
-    def resolver = MatcherFactory.create CollectMatcher, self, matches
+    MatcherFactory.getResult CollectMatcher, self, matches
     
-    if (resolver.matches) {
-      return resolver.matches
-    } else { 
-      def other = resolver.otherwiseValue
-      return (other instanceof Closure) ? ((Closure) other)() : other
-    }
+    
   }
   
   
@@ -128,21 +116,10 @@ import groovy.transform.CompileStatic as CS
    * a single object from the <code>otherwise</code> value, or <code>null</code>.
    */
   static <T> Object caseCollectLazy(T self, 
-      @DelegatesTo(value=Resolver, strategy=Closure.DELEGATE_FIRST) Closure matches) {
+      @DelegatesTo(value=Matcher, strategy=Closure.DELEGATE_FIRST) Closure matches) {
     
-    def resolver = MatcherFactory.create LazyCollectMatcher, self, matches
+    MatcherFactory.getResult LazyCollectMatcher, self, matches
     
-    /*def resolver = new LazyCollectMatcher(self: self)
-    matches.delegate = resolver
-    matches( self )
-    resolver.done()*/
-    
-    if (resolver.matches.size() == 0 && resolver.otherwiseValue) {
-      return resolver.otherwiseValue
-    }
-    else {
-      return resolver.matches
-    } 
   }
   
 }

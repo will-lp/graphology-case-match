@@ -23,7 +23,7 @@ import groovy.transform.CompileStatic as CS
  * 
  * @author will_lp
  */
-@CS class SingleLazyMatcher extends Resolver implements Matcher {
+@CS class SingleLazyMatcher extends AbstractMatcher {
   def matched = false
   
   void when(Object condition, Object result) {
@@ -37,6 +37,11 @@ import groovy.transform.CompileStatic as CS
         }
       }
     }
+  }
+  
+  
+  Object getMatchedResult() {
+    matched ? result : otherwiseValue
   }
   
 }

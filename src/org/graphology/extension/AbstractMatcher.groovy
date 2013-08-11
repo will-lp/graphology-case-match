@@ -28,7 +28,7 @@ import groovy.transform.PackageScope as PS
  *
  * @author will_lp
  */
-@CS abstract class Resolver {
+@CS abstract class AbstractMatcher implements Matcher {
 
   /*
    * The object which a closure is being matched against, i.e:
@@ -87,10 +87,7 @@ import groovy.transform.PackageScope as PS
    */
   boolean waitingForThen = false
   
-  /*
-   * Will be called by the <code>Then</code> object when the
-   * user passes a result
-   */
+
   def doneWithThen() { waitingForThen = false }
   
   
@@ -132,6 +129,6 @@ import groovy.transform.PackageScope as PS
     }
   }
   
+  
 }
-
 

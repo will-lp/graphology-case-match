@@ -23,7 +23,7 @@ import groovy.transform.CompileStatic as CS
  * 
  * @author will_lp
  */
-@CS class CollectMatcher extends Resolver implements Matcher {
+@CS class CollectMatcher extends AbstractMatcher {
   List<?> matches = []
   
   void when(Object condition, Object result) {
@@ -33,6 +33,16 @@ import groovy.transform.CompileStatic as CS
       } else {
         matches << result
       }
+    }
+  }
+  
+  
+  Object getMatchedResult() {
+    if (matches) {
+      return matches
+    } else { 
+      def other = otherwiseValue
+      return (other instanceof Closure) ? ((Closure) other)() : other
     }
   }
 }

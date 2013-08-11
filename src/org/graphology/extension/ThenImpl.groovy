@@ -25,7 +25,7 @@ import groovy.transform.CompileStatic as CS
  * @author will_lp
  */
 @CS class ThenImpl implements Then {
-  Resolver resolver
+  Matcher matcher
   Object condition
   
   /**
@@ -37,14 +37,14 @@ import groovy.transform.CompileStatic as CS
    * @param condition: the condition to which the <code>self</code>
    * object needs to match.
    */
-  ThenImpl(Resolver resolver, Object condition) { 
-    this.resolver = resolver 
+  ThenImpl(Matcher matcher, Object condition) { 
+    this.matcher = matcher
     this.condition = condition
   }
   
   void then(Object result) {
-    assert resolver, "No Resolver was passed to this object"
-    resolver.doneWithThen()
-    resolver.when condition, result
+    assert matcher, "No Resolver was passed to this object"
+    matcher.doneWithThen()
+    matcher.when condition, result
   }
 }
