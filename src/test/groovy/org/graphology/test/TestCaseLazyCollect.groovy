@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+package org.graphology.test
+
 import groovy.transform.CompileStatic as CS
 
 
